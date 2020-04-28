@@ -28,7 +28,7 @@ namespace BackEnd.Controllers
 
         // GET: api/Session_Chair/5
         [HttpGet("{id_session}/{id_chair?}")]
-        public async Task<ActionResult<IEnumerable<Session_Chair>>> GetSession_Chair(int id_session, int id_chair=0)
+        public async Task<ActionResult<IEnumerable<Session_Chair>>> GetSession_Chair(int id_session, int id_chair = 0)
         {
             List<Session_Chair> session_Chair = new List<Session_Chair>();
             if (id_session == 0 || id_chair == 0)

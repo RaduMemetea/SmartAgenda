@@ -28,7 +28,7 @@ namespace BackEnd.Controllers
 
         // GET: api/Session_Talks/5
         [HttpGet("{id_session}/{id_talk?}")]
-        public async Task<ActionResult<IEnumerable<Session_Talks>>> GetSession_Talks(int id_session, int id_talk=0)
+        public async Task<ActionResult<IEnumerable<Session_Talks>>> GetSession_Talks(int id_session, int id_talk = 0)
         {
             List<Session_Talks> session_Talks = new List<Session_Talks>();
 
@@ -107,7 +107,7 @@ namespace BackEnd.Controllers
                 }
             }
 
-            return CreatedAtAction("GetSession_Talks", new { id_session = session_Talks.SessionID , id_talk = session_Talks.TalkID }, session_Talks);
+            return CreatedAtAction("GetSession_Talks", new { id_session = session_Talks.SessionID, id_talk = session_Talks.TalkID }, session_Talks);
         }
 
         // DELETE: api/Session_Talks/5

@@ -27,21 +27,7 @@
 
     @foreach (var conf in Model.Conferences)
     {
-
-        <div class="col-md-3 mb-4">
-            <div class="card shadow session h-auto">
-
-                <div class="card-header">
-                    <h5 class="card-title"><a asp-page="Conference" asp-route-conference_id="@conf.ID">@conf.Name</a></h5>
-                </div>
-
-                <div class="card-body text-center">
-                    <h7>@conf.Start_Date.ToString(@"d.MM.yyyy", CultureInfo.InvariantCulture) - @conf.End_Date.ToString(@"d.MM.yyyy", CultureInfo.InvariantCulture) </h7>
-                </div>
-            </div>
-        </div>
-
-        
+        <partial name="Conference/_Conference_Card" model="conf" />
     }
 
 </div>

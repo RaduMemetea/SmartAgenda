@@ -27,7 +27,7 @@ namespace BackEnd.Controllers
         }
 
         // GET: api/Conference_Tags/5
-        [HttpGet("{id_conference}/{id_tag?}" )]
+        [HttpGet("{id_conference}/{id_tag?}")]
         public async Task<ActionResult<IEnumerable<Conference_Tags>>> GetConference_Tags(int id_conference, string id_tag = null)
         {
             List<Conference_Tags> conference_Tags = new List<Conference_Tags>();

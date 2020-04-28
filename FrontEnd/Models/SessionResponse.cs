@@ -1,7 +1,7 @@
 ﻿using DataModels;
 using System.Collections.Generic;
 
-namespace FrontEnd.Pages.Models
+namespace FrontEnd.Models
 {
     public class SessionResponse : Session
     {

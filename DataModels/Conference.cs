@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace DataModels
 {
@@ -14,9 +14,22 @@ namespace DataModels
             End_Date = conference.End_Date;
         }
 
+        public Conference(int iD, string name, DateTimeOffset start_Date, DateTimeOffset end_Date)
+        {
+            ID = iD;
+            Name = name;
+            Start_Date = start_Date;
+            End_Date = end_Date;
+        }
+
+        [Required]
         public int ID { get; set; }
+        
+        [Required, MinLength(3), MaxLength(20)]
         public String Name { get; set; }
+
         public DateTimeOffset Start_Date { get; set; }
+        
         public DateTimeOffset End_Date { get; set; }
 
 

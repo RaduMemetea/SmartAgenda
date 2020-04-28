@@ -1,0 +1,53 @@
+﻿@using Models
+@using System.Globalization
+@model TalksResponse
+
+<div class="ro ">
+
+    <div class="d-flex flex-row ro-content border-bottom">
+        <div class="ro-content my-auto">
+            <button class="btn ">
+                <i class="oi oi-plus"></i>
+            </button>
+        </div>
+
+
+        <div class="ro-content my-auto p-2">
+            @Model.Hour.ToString(@"HH\:mm", CultureInfo.InvariantCulture)
+        </div>
+
+        <div class="ro-content d-flex flex-column cr my-auto">
+            <div class="cr ">
+
+                @if (Model.Persons != null && Model.Persons.Any())
+                {
+
+
+                    @for (int i = 0; i < Model.Persons.Count(); i++)
+                    {
+                        <a>@Model.Persons.ElementAt(i).First_Name @Model.Persons.ElementAt(i).Last_Name</a>
+
+                        @if (Model.Persons.Count() > 1 && i == (Model.Persons.Count() - 2))
+                        {
+                            @:and
+                        }
+
+
+                        @if (Model.Persons.Count() > 1 && i < (Model.Persons.Count() - 2))
+                        {
+                            @:,
+                        }
+
+
+                    }
+                }
+
+            </div>
+            <div class="cr my-auto ">
+                <b>@Model.Name</b>
+            </div>
+
+        </div>
+
+    </div>
+</div>

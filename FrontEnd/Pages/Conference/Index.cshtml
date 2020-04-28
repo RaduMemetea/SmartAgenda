@@ -1,0 +1,22 @@
+﻿@page "{conference_id:int}"
+@model FrontEnd.Pages.Conference.IndexModel
+@using System.Globalization;
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="Sessions">
+
+    <h1>@Model.conference.Name</h1>
+
+    <div id="accordion">
+
+
+        @foreach (var session in Model.Sessions)
+        {
+            <partial name="Session/_Session_Card" model="session" />
+        }
+
+    </div>
+
+</div>

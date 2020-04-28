@@ -57,12 +57,12 @@ namespace BackEnd.DataBase
 
             modelBuilder.Entity<Conference_Tags>()
                 .HasKey(k => new { k.ConferenceID, k.TagID });
-            
+
             modelBuilder.Entity<Conference_Tags>()
                 .HasOne<Conference>()
                 .WithMany()
                 .HasForeignKey(s => s.ConferenceID);
-            
+
             modelBuilder.Entity<Conference_Tags>()
                 .HasOne<Tag>()
                 .WithMany()

@@ -1,6 +1,6 @@
 ﻿using DataModels;
 using DataModels.Complex;
-using FrontEnd.Pages.Models;
+using FrontEnd.Models;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -45,6 +45,7 @@ namespace FrontEnd.Services
 
 
         #region Basics
+
         public async Task<Tag> GetTagAsync(string id_tag)
         {
             var response = await httpClient.GetAsync($"/api/Tags/{id_tag}");
@@ -225,9 +226,36 @@ namespace FrontEnd.Services
 
 
 
+        #endregion
 
+
+        #region POST
+
+        public async Task<int> CreateConferenceAsync(ConferenceResponse conferenceResponse)
+        {
+            Conference converted = new Conference(conferenceResponse.ID,conferenceResponse.Name, conferenceResponse.Start_Date, conferenceResponse.End_Date);
+
+            var response = await httpClient.PostAsJsonAsync("/api/Conferences", converted);
+            if (!response.IsSuccessStatusCode)
+                return 0;
+
+            response.EnsureSuccessStatusCode();
+            return response.Content.ReadAsAsync<Conference>().Result.ID;
+               
+        }
 
         #endregion
 
+        #region DELETE
+        public async Task<bool> DeleteConferenceAsync(int conference_id)
+        {
+            var response = await httpClient.DeleteAsync($"/api/Conferences/{conference_id}");
+            if (!response.IsSuccessStatusCode)
+                return false;
+
+            return true;
+            
+        }
+        #endregion
     }
 }

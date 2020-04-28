@@ -1,0 +1,54 @@
+﻿@page
+@model FrontEnd.Pages.Conference.AddModel
+@{
+    ViewData["Title"] = "Add";
+}
+
+<form method="post">
+
+    <h4>Adding a Conference</h4>
+
+    <input type="hidden" asp-for="Conference.ID" value=0 />
+
+    <div class="form-group">
+
+        <label asp-for="Conference.Name"></label>
+        <input asp-for="Conference.Name" class="form-control" />
+        <span class="text-danger" asp-validation-for="Conference.Name"></span>
+    </div>
+
+    <div class="form-group">
+
+        <label asp-for="Conference.Start_Date"></label>
+        <input type="date" asp-for="Conference.Start_Date" class="form-control" />
+        <span class="text-danger" asp-validation-for="Conference.Start_Date"></span>
+
+    </div>
+
+    <div class="form-group">
+
+        <label asp-for="Conference.End_Date"></label>
+        <input type="date" asp-for="Conference.End_Date" class="form-control" />
+        <span class="text-danger" asp-validation-for="Conference.End_Date"></span>
+
+    </div>
+
+    <div class="form-group">
+
+        <label asp-for="Conference.Tags"></label>
+        <input asp-for="Conference.Tags" class="form-control" />
+
+    </div>
+
+
+    <button type="submit" class=" btn btn-primary">Save</button>
+
+    <button type="reset" class=" btn btn-danger">Clear</button>
+
+</form>
+
+@section  Scripts
+{
+    <partial name="_ValidationScriptsPartial" />
+
+}

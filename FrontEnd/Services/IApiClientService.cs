@@ -1,5 +1,5 @@
 ﻿using DataModels;
-using FrontEnd.Pages.Models;
+using FrontEnd.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -33,5 +33,20 @@ namespace FrontEnd.Services
         #endregion 
         Task<IEnumerable<Tag>> GetTagsAsync();
 
+
+
+
+        #region POST
+
+        Task<int> CreateConferenceAsync(ConferenceResponse conferenceResponse);
+
+        #endregion
+
+
+
+        #region DELETE
+        Task<bool> DeleteConferenceAsync(int conference_id);
+
+        #endregion
     }
 }

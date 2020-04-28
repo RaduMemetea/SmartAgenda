@@ -28,7 +28,7 @@ namespace BackEnd.Controllers.Complex
 
         // GET: api/Talk_Persons/5
         [HttpGet("{id_talk}/{id_person?}")]
-        public async Task<ActionResult<IEnumerable<Talk_Persons>>> GetTalk_Persons(int id_talk, int id_person=0)
+        public async Task<ActionResult<IEnumerable<Talk_Persons>>> GetTalk_Persons(int id_talk, int id_person = 0)
         {
             List<Talk_Persons> talk_Persons = new List<Talk_Persons>();
             if (id_talk == 0 || id_person == 0)
