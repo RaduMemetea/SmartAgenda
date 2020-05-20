@@ -1,12 +1,13 @@
-﻿@page
-@model FrontEnd.Pages.Conference.AddModel
+﻿@page "{conference_id:int}"
+@model FrontEnd.Pages.Conference.EditModel
 @{
-    ViewData["Title"] = "Add";
+    ViewData["Title"] = "Edit";
 }
-
 <form method="post">
 
     <h4>Adding a Conference</h4>
+
+    <input type="hidden" asp-for="Conference.ID" value=0 />
 
     <div class="form-group">
 
@@ -34,7 +35,11 @@
     <div class="form-group">
 
         <label asp-for="Conference.Tags"></label>
-        <input asp-for="Conference.Tags" class="form-control" />
+        @foreach (var item in Model.Conference.Tags)
+        {
+            <input asp-for="@item" class="form-control" />
+        }
+
 
     </div>
 
@@ -45,7 +50,7 @@
 
 </form>
 
-@section  Scripts
+@section Scripts
 {
     <partial name="_ValidationScriptsPartial" />
 

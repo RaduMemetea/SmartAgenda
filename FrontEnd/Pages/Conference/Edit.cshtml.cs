@@ -9,38 +9,34 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace FrontEnd.Pages.Conference
 {
-    public class AddModel : PageModel
-    {       
+    public class EditModel : PageModel
+    {
         public IApiClientService ApiClient { get; }
 
         [BindProperty]
         public ConferenceResponse Conference { get; set; }
 
-
-        public AddModel(IApiClientService apiClientService)
+        public EditModel(IApiClientService apiClientService)
         {
             ApiClient = apiClientService;
         }
 
-        public void OnGet()
+        public void OnGet(int conference_id)
         {
-
+            Conference = ApiClient.GetConferenceAsync(conference_id).Result;
+            Conference.Tags = Conference.Tags.ToList();
         }
+
         public IActionResult OnPost()
         {
             if (!ModelState.IsValid)
                 return Page();
-            Conference.ID = 0;
-            ///TODO
-            ///COnfigure the input of the Conference.Tags to be as a List<string>
 
-            var result = ApiClient.CreateConferenceAsync(Conference).Result;
-            if (result.Item1 == false)
+            bool result = ApiClient.UpdateConferenceAsync(Conference).Result;
+            if (result == false)
                 return RedirectToPage("/Error");
 
-            return RedirectToPage($"/Conference/Index", new { conference_id = result.Item2 });
+            return RedirectToPage($"/Conference/Index", new { conference_id = Conference.ID });
         }
-
     }
 }
-

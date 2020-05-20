@@ -1,7 +1,9 @@
 ﻿using DataModels;
 using DataModels.Complex;
 using FrontEnd.Models;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -231,19 +233,109 @@ namespace FrontEnd.Services
 
         #region POST
 
-        public async Task<int> CreateConferenceAsync(ConferenceResponse conferenceResponse)
+        public async Task<Tuple<bool, int>> CreateConferenceAsync(ConferenceResponse conferenceResponse)
         {
-            Conference converted = new Conference(conferenceResponse.ID,conferenceResponse.Name, conferenceResponse.Start_Date, conferenceResponse.End_Date);
+            Conference converted = new Conference(conferenceResponse.ID, conferenceResponse.Name, conferenceResponse.Start_Date, conferenceResponse.End_Date);
 
             var response = await httpClient.PostAsJsonAsync("/api/Conferences", converted);
             if (!response.IsSuccessStatusCode)
-                return 0;
+                return new Tuple<bool, int>(false, 0);
 
             response.EnsureSuccessStatusCode();
-            return response.Content.ReadAsAsync<Conference>().Result.ID;
-               
+            var responseDecoded = response.Content.ReadAsAsync<Conference>().Result;
+            if (((List<string>)conferenceResponse.Tags).Count >= 1)
+            {
+                foreach (var tag in conferenceResponse.Tags)
+                {
+                    if (CreateTagAsync(new Tag(tag)).Result.Item1 &&
+                        CreateConference_TagAsync(new Conference_Tags(responseDecoded.ID, tag)).Result.Item1)
+
+                        return new Tuple<bool, int>(true, responseDecoded.ID);
+                    else
+                        return new Tuple<bool, int>(false, 0);
+
+                }
+            }
+
+            return new Tuple<bool, int>(true, response.Content.ReadAsAsync<Conference>().Result.ID); ;
+
+        }
+        public async Task<Tuple<bool, string>> CreateTagAsync(Tag tag)
+        {
+            if (GetTagAsync(tag.ID).Result == null)
+            {
+                var response = await httpClient.PostAsJsonAsync("/api/Tags", tag);
+
+                if (!response.IsSuccessStatusCode)
+                    return new Tuple<bool, string>(false, null);
+
+                response.EnsureSuccessStatusCode();
+            }
+            return new Tuple<bool, string>(true, tag.ID);
         }
 
+        public async Task<Tuple<bool, int, string>> CreateConference_TagAsync(Conference_Tags conference_Tags)
+        {
+
+            var response = await httpClient.PostAsJsonAsync("/api/Conference_Tags", conference_Tags);
+
+            if (!response.IsSuccessStatusCode)
+                return new Tuple<bool, int, string>(false, 0, null); ;
+
+            response.EnsureSuccessStatusCode();
+
+            return new Tuple<bool, int, string>(true, conference_Tags.ConferenceID, conference_Tags.TagID);
+        }
+
+        #endregion
+
+
+        #region PUT
+
+        public async Task<bool> UpdateConferenceAsync(ConferenceResponse conference)
+        {
+            Conference converted = new Conference(conference.ID, conference.Name, conference.Start_Date, conference.End_Date);
+
+            var response = await httpClient.PutAsJsonAsync<Conference>("/api/Conferences", converted);
+            if (!response.IsSuccessStatusCode)
+                return false;
+
+            response.EnsureSuccessStatusCode();
+
+            if (((List<string>)conference.Tags).Count >= 1)
+            {
+                return UpdateConference_TagsAsync(conference.ID, conference.Tags).Result;
+            }
+
+
+            return true;
+        }
+
+        //keep the one already present, delete all the old tags, insert the new tags
+        public async Task<bool> UpdateConference_TagsAsync(int conference_id, IEnumerable<string> tags)
+        {
+
+            var OldTags = GetConference_TagsAsync(conference_id).Result.ToList<string>();// all the present tags
+
+            var intersectingTags = OldTags.Intersect<string>(tags, StringComparer.InvariantCultureIgnoreCase).ToList<string>();
+            var uniqueOld = OldTags.Except<string>(intersectingTags, StringComparer.InvariantCultureIgnoreCase).ToList<string>();//to be deleted
+            var uniqueNew = tags.Except<string>(intersectingTags, StringComparer.InvariantCultureIgnoreCase).ToList<string>();//to be added
+
+            if (uniqueOld != null && uniqueOld.Any())// delete all the tags that are not needed anymore
+            {
+                await DeleteConference_TagsAsync(conference_id, uniqueOld);
+            }
+            if (uniqueNew != null && uniqueNew.Any())// insert all the tags that are new
+            {
+                foreach (var tag in uniqueNew)
+                {
+                    await CreateConference_TagAsync(new Conference_Tags(conference_id, tag));
+                }
+            }
+
+            return true;
+
+        }
         #endregion
 
         #region DELETE
@@ -253,9 +345,25 @@ namespace FrontEnd.Services
             if (!response.IsSuccessStatusCode)
                 return false;
 
+            response.EnsureSuccessStatusCode();
             return true;
-            
+
         }
+        public async Task<bool> DeleteConference_TagsAsync(int conference_id, IEnumerable<string> tags)
+        {
+            foreach (var tag in tags)
+            {
+                var response = await httpClient.DeleteAsync($"/api/Conference_Tags/{conference_id}/{tag}");
+                if (!response.IsSuccessStatusCode)
+                    return false;
+
+                response.EnsureSuccessStatusCode();
+
+            }
+            return true;
+        }
+
+
         #endregion
     }
 }

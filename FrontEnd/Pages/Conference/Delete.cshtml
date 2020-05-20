@@ -1,0 +1,15 @@
+﻿@page "{conference_id:int}"
+@model FrontEnd.Pages.Conference.DeleteModel
+@{
+    ViewData["Title"] = "Delete";
+}
+
+
+    <div>
+        <h1>Are you sure you want to delete "@Model.conference.Name"?</h1>
+        <form method="post">
+            
+            <button type="submit" class="btn btn-danger">Yes!</button>
+            <a href="javascript:history.go(-1)" class="btn btn-primary">Back</a>
+        </form>
+    </div>

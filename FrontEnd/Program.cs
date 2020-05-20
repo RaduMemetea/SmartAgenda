@@ -15,7 +15,7 @@ namespace FrontEnd
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-                    webBuilder.UseUrls("http://localhost:8002");
+                    //webBuilder.UseUrls("http://localhost:8002");
                 });
     }
 }

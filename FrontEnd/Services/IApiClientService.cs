@@ -1,5 +1,7 @@
 ﻿using DataModels;
+using DataModels.Complex;
 using FrontEnd.Models;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -38,11 +40,16 @@ namespace FrontEnd.Services
 
         #region POST
 
-        Task<int> CreateConferenceAsync(ConferenceResponse conferenceResponse);
+        Task<Tuple<bool, int>> CreateConferenceAsync(ConferenceResponse conferenceResponse);
+        Task<Tuple<bool, string>> CreateTagAsync(Tag tag);
+        Task<Tuple<bool, int, string>> CreateConference_TagAsync(Conference_Tags conference_Tags);
 
         #endregion
 
+        #region PUT
+        Task<bool> UpdateConferenceAsync(ConferenceResponse conference);
 
+        #endregion
 
         #region DELETE
         Task<bool> DeleteConferenceAsync(int conference_id);

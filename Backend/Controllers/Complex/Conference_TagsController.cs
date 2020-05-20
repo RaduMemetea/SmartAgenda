@@ -51,38 +51,6 @@ namespace BackEnd.Controllers
             return conference_Tags;
         }
 
-        // PUT: api/Conference_Tags/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
-        [HttpPut("{id_conference}/{id_tag}")]
-        public async Task<IActionResult> PutConference_Tags(int id_conference, string id_tag, Conference_Tags conference_Tags)
-        {
-            if (id_conference != conference_Tags.ConferenceID || !id_tag.Equals(conference_Tags.TagID))
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(conference_Tags).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!Conference_TagsExists(id_conference, id_tag))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
         // POST: api/Conference_Tags
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.

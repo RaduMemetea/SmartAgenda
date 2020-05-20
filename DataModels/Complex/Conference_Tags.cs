@@ -6,6 +6,12 @@ namespace DataModels.Complex
 {
     public class Conference_Tags
     {
+        public Conference_Tags(int conferenceID, string tagID)
+        {
+            ConferenceID = conferenceID;
+            TagID = tagID;
+        }
+
         [Key]
         [ForeignKey("Conference")]
         public int ConferenceID { get; set; }

@@ -5,18 +5,18 @@
     ViewData["Title"] = "Index";
 }
 
-<div class="Sessions">
+    <div class="Sessions">
 
-    <h1>@Model.conference.Name</h1>
+        <h1>@Model.conference.Name</h1>
+        <a asp-page="/Session/Add" asp-route-conference_id="@Model.conference.ID" class="btn btn-secondary oi oi-plus"></a>
+        <a asp-page="/Conference/Delete" asp-route-conference_id="@Model.conference.ID" class="btn btn-danger oi oi-trash"></a>
+        <div id="accordion">
 
-    <div id="accordion">
+            @foreach (var session in Model.Sessions)
+            {
+                <partial name="Session/_Session_Card" model="session" />
+            }
 
-
-        @foreach (var session in Model.Sessions)
-        {
-            <partial name="Session/_Session_Card" model="session" />
-        }
+        </div>
 
     </div>
-
-</div>
