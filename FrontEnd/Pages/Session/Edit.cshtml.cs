@@ -7,24 +7,39 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using FrontEnd.Models;
+using FrontEnd.Services;
 
 namespace FrontEnd.Pages.Session
 {
     public class EditModel : PageModel
     {
-        
+
 
         [BindProperty]
         public SessionResponse SessionResponse { get; set; }
+        public IApiClientService ApiClient { get; }
+        public ConferenceResponse Conference { get; private set; }
+        [BindProperty]
+        public string chairsList { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(int? id)
+
+        public EditModel(IApiClientService apiClient)
         {
-            if (id == null)
+            ApiClient = apiClient;
+        }
+
+
+        public async Task<IActionResult> OnGetAsync(int? session_id)
+        {
+            if (session_id == null)
             {
                 return NotFound();
             }
 
-            
+            SessionResponse = ApiClient.GetSessionAsync(session_id.Value).Result;
+
+            Conference = ApiClient.GetConferenceAsync(SessionResponse.ConferenceID).Result;
+
 
             if (SessionResponse == null)
             {

@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using FrontEnd.Models;
+﻿using FrontEnd.Models;
 using FrontEnd.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace FrontEnd.Pages.Conference
 {
@@ -21,10 +19,13 @@ namespace FrontEnd.Pages.Conference
             ApiClient = apiClientService;
         }
 
-        public void OnGet(int conference_id)
+        public void OnGet(int? conference_id)
         {
-            Conference = ApiClient.GetConferenceAsync(conference_id).Result;
-            Conference.Tags = Conference.Tags.ToList();
+           
+
+            Conference = ApiClient.GetConferenceAsync(conference_id.Value).Result;
+            if (Conference != null && Conference.Tags != null)
+                Conference.Tags = Conference.Tags.ToList();
         }
 
         public IActionResult OnPost()

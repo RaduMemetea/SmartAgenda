@@ -18,6 +18,17 @@ namespace FrontEnd.Services
             this.httpClient = httpClient;
         }
 
+        public async Task<ConferenceResponse> GetConferenceAsync(int id_conference)
+        {
+            var response = await httpClient.GetAsync($"/api/Conferences/{id_conference}");
+            if (!response.IsSuccessStatusCode)
+                return null;
+
+            var conference = await response.Content.ReadAsAsync<Conference>();
+
+            return new ConferenceResponse(conference, GetConference_TagsAsync(conference.ID).Result);
+        }
+
         public async Task<IEnumerable<ConferenceResponse>> GetConferencesAsync()
         {
             var response = await httpClient.GetAsync("/api/Conferences");
@@ -33,21 +44,6 @@ namespace FrontEnd.Services
         }
 
 
-        public async Task<ConferenceResponse> GetConferenceAsync(int id_conference)
-        {
-            var response = await httpClient.GetAsync($"/api/Conferences/{id_conference}");
-            if (!response.IsSuccessStatusCode)
-                return null;
-
-            var conference = await response.Content.ReadAsAsync<Conference>();
-
-            return new ConferenceResponse(conference, GetConference_TagsAsync(conference.ID).Result);
-        }
-
-
-
-        #region Basics
-
         public async Task<Tag> GetTagAsync(string id_tag)
         {
             var response = await httpClient.GetAsync($"/api/Tags/{id_tag}");
@@ -57,6 +53,7 @@ namespace FrontEnd.Services
             return await response.Content.ReadAsAsync<Tag>();
         }
 
+
         public async Task<IEnumerable<Tag>> GetTagsAsync()
         {
             var response = await httpClient.GetAsync("/api/Tags");
@@ -65,6 +62,7 @@ namespace FrontEnd.Services
 
             return await response.Content.ReadAsAsync<IEnumerable<Tag>>();
         }
+
 
         public async Task<Location> GetLocationAsync(int id_location)
         {
@@ -94,13 +92,6 @@ namespace FrontEnd.Services
         }
 
 
-
-        #endregion
-
-
-
-
-
         public async Task<SessionResponse> GetSessionAsync(int id_session)
         {
             var response = await httpClient.GetAsync($"/api/Sessions/{id_session}");
@@ -113,8 +104,10 @@ namespace FrontEnd.Services
                 session.Result,
                 GetLocationAsync(session.Result.LocationID).Result,
                 GetSession_ChairsAsync(id_session).Result,
-                GetSession_TalksAsync(id_session).Result);
+                GetSession_TalksAsync(id_session).Result
+                );
         }
+
 
         public async Task<List<SessionResponse>> GetSessionsByConference(int id_conference)
         {
@@ -202,12 +195,7 @@ namespace FrontEnd.Services
         }
 
 
-
-
-
-        #region Utilities
-
-        private async Task<IEnumerable<string>> GetConference_TagsAsync(int id_conference)
+        public async Task<IEnumerable<string>> GetConference_TagsAsync(int id_conference)
         {
             var response = await httpClient.GetAsync($"/api/Conference_Tags/{id_conference}");
             if (!response.IsSuccessStatusCode)
@@ -227,11 +215,8 @@ namespace FrontEnd.Services
 
 
 
-
-        #endregion
-
-
         #region POST
+
 
         public async Task<Tuple<bool, int>> CreateConferenceAsync(ConferenceResponse conferenceResponse)
         {
@@ -260,6 +245,7 @@ namespace FrontEnd.Services
             return new Tuple<bool, int>(true, response.Content.ReadAsAsync<Conference>().Result.ID); ;
 
         }
+
         public async Task<Tuple<bool, string>> CreateTagAsync(Tag tag)
         {
             if (GetTagAsync(tag.ID).Result == null)
@@ -274,6 +260,7 @@ namespace FrontEnd.Services
             return new Tuple<bool, string>(true, tag.ID);
         }
 
+
         public async Task<Tuple<bool, int, string>> CreateConference_TagAsync(Conference_Tags conference_Tags)
         {
 
@@ -286,6 +273,74 @@ namespace FrontEnd.Services
 
             return new Tuple<bool, int, string>(true, conference_Tags.ConferenceID, conference_Tags.TagID);
         }
+
+        public async Task<Tuple<bool, int>> CreateSessionAsync(SessionResponse sessionResponse)
+        {
+            Session converted = sessionResponse.GetSession();
+
+            var location = CreateLocationAsync(sessionResponse.Location).Result;
+            converted.LocationID = location != null ? location.ID : 0;              // if the location is not null then initialize with the response id otherwise 0
+
+            if (converted.LocationID == 0)
+                return new Tuple<bool, int>(false, -1);
+
+            var response = await httpClient.PostAsJsonAsync("/api/Sessions", converted);
+            if (!response.IsSuccessStatusCode)
+                return new Tuple<bool, int>(false, 0);
+
+            converted.ID = response.Content.ReadAsAsync<Session>().Result.ID;
+
+            if (sessionResponse.Chairs != null && sessionResponse.Chairs.Any())
+                foreach (var chair in sessionResponse.Chairs)
+                {
+                    var chairsResponse = CreatePersonAsync(chair).Result != null? CreatePersonAsync(chair).Result.ID : 0;
+                    if (chairsResponse == 0)
+                        return new Tuple<bool, int>(false, -2);
+
+                    await CreateSession_ChairAsync(new Session_Chair { 
+                        SessionID = converted.ID, 
+                        PersonID = chairsResponse
+                    });
+                }
+
+            return new Tuple<bool, int>(true, converted.ID);
+
+
+        }
+
+        public async Task<Location> CreateLocationAsync(Location location)
+        {
+            var response = await httpClient.PostAsJsonAsync("/api/Locations", location);
+            if (!response.IsSuccessStatusCode)
+                return null;
+
+            response.EnsureSuccessStatusCode();
+
+            return response.Content.ReadAsAsync<Location>().Result;
+        }
+        public async Task<Person> CreatePersonAsync(Person person)
+        {
+            var response = await httpClient.PostAsJsonAsync("/api/Person", person);
+            if (!response.IsSuccessStatusCode)
+                return null;
+
+            response.EnsureSuccessStatusCode();
+
+            return response.Content.ReadAsAsync<Person>().Result;
+        }
+
+        public async Task<Session_Chair> CreateSession_ChairAsync(Session_Chair session_Chair)
+        {
+            var response = await httpClient.PostAsJsonAsync("/api/Session_Chair", session_Chair);
+            if (!response.IsSuccessStatusCode)
+                return null;
+
+            response.EnsureSuccessStatusCode();
+
+            return response.Content.ReadAsAsync<Session_Chair>().Result;
+
+        }
+
 
         #endregion
 
@@ -336,6 +391,8 @@ namespace FrontEnd.Services
             return true;
 
         }
+
+
         #endregion
 
         #region DELETE
@@ -349,6 +406,7 @@ namespace FrontEnd.Services
             return true;
 
         }
+
         public async Task<bool> DeleteConference_TagsAsync(int conference_id, IEnumerable<string> tags)
         {
             foreach (var tag in tags)

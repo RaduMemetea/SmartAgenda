@@ -8,9 +8,9 @@ namespace FrontEnd.Models
     {
         public ConferenceResponse() { }
 
-        public ConferenceResponse(Conference conference, IEnumerable<string> tag_ids) : base(conference)
+        public ConferenceResponse(Conference conference, IEnumerable<string> tags) : base(conference)
         {
-            Tags = tag_ids;
+            Tags = tags;
         }
 
         public virtual IEnumerable<string> Tags { get; set; }

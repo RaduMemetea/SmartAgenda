@@ -9,31 +9,44 @@ namespace FrontEnd.Services
 {
     public interface IApiClientService
     {
+
+
+        #region Get
+
         Task<IEnumerable<ConferenceResponse>> GetConferencesAsync();
+
         Task<SessionResponse> GetSessionAsync(int id_session);
 
-        Task<List<SessionResponse>> GetSessionsByConference(int id_conference);
-        Task<ConferenceResponse> GetConferenceAsync(int id_conference);
+        Task<Tag> GetTagAsync(string id_tag);
 
-        #region Utilities
+        Task<Location> GetLocationAsync(int id_location);
 
-        //Task<IEnumerable<string>> GetConference_TagsAsync(int id_conference);
+        Task<Person> GetPersonAsync(int id_person);
+
+        Task<Talk> GetTalkAsync(int id_talk);
+
+        Task<IEnumerable<string>> GetConference_TagsAsync(int id_conference);
+
         Task<IEnumerable<Person>> GetSession_ChairsAsync(int id_session);
-        Task<IEnumerable<TalksResponse>> GetSession_TalksAsync(int id_session);
+
         Task<IEnumerable<Person>> GetTalk_PersonsAsync(int id_talk);
+
+        Task<IEnumerable<Tag>> GetTagsAsync();
+
+
+
+
+        #region Get extra 
+
+            Task<List<SessionResponse>> GetSessionsByConference(int id_conference);
+            Task<ConferenceResponse> GetConferenceAsync(int id_conference);
+            Task<IEnumerable<TalksResponse>> GetSession_TalksAsync(int id_session);
+
+        #endregion
 
         #endregion
 
 
-        #region Base
-
-        Task<Tag> GetTagAsync(string id_tag);
-        Task<Location> GetLocationAsync(int id_location);
-        Task<Person> GetPersonAsync(int id_person);
-        Task<Talk> GetTalkAsync(int id_talk);
-
-        #endregion 
-        Task<IEnumerable<Tag>> GetTagsAsync();
 
 
 
@@ -44,7 +57,16 @@ namespace FrontEnd.Services
         Task<Tuple<bool, string>> CreateTagAsync(Tag tag);
         Task<Tuple<bool, int, string>> CreateConference_TagAsync(Conference_Tags conference_Tags);
 
+        Task<Tuple<bool, int>> CreateSessionAsync(SessionResponse sessionResponse);
+        Task<Location> CreateLocationAsync(Location location);
+        Task<Person> CreatePersonAsync(Person person);
+        Task<Session_Chair> CreateSession_ChairAsync(Session_Chair session_Chair);
+
         #endregion
+
+
+
+
 
         #region PUT
         Task<bool> UpdateConferenceAsync(ConferenceResponse conference);

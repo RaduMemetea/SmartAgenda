@@ -1,4 +1,4 @@
-﻿@page
+﻿@page "{session_id:int}"
 @model FrontEnd.Pages.Session.EditModel
 
 @{
@@ -7,47 +7,53 @@
 
 <h1>Edit</h1>
 
-<h4>SessionResponse</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="SessionResponse.ID" />
             <div class="form-group">
                 <label asp-for="SessionResponse.Name" class="control-label"></label>
                 <input asp-for="SessionResponse.Name" class="form-control" />
                 <span asp-validation-for="SessionResponse.Name" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="SessionResponse.Start_Hour" class="control-label"></label>
-                <input asp-for="SessionResponse.Start_Hour" class="form-control" />
+                <input type="date" asp-for="SessionResponse.Start_Hour" class="form-control" />
                 <span asp-validation-for="SessionResponse.Start_Hour" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="SessionResponse.End_Hour" class="control-label"></label>
-                <input asp-for="SessionResponse.End_Hour" class="form-control" />
+                <input type="date" asp-for="SessionResponse.End_Hour" class="form-control" />
                 <span asp-validation-for="SessionResponse.End_Hour" class="text-danger"></span>
             </div>
+
             <div class="form-group">
-                <label asp-for="SessionResponse.ConferenceID" class="control-label"></label>
-                <input asp-for="SessionResponse.ConferenceID" class="form-control" />
-                <span asp-validation-for="SessionResponse.ConferenceID" class="text-danger"></span>
+                <label asp-for="SessionResponse.Location" class="control-label"></label>
+                <input type="text" asp-for="SessionResponse.Location.Name" class="form-control" placeholder="Name " />
+                <span asp-validation-for="SessionResponse.Location.Name" class="text-danger"></span>
+                <input type="text" asp-for="SessionResponse.Location.Details" class="form-control" placeholder="Details" />
+                <span asp-validation-for="SessionResponse.Location.Details" class="text-danger"></span>
             </div>
+
             <div class="form-group">
-                <label asp-for="SessionResponse.LocationID" class="control-label"></label>
-                <select asp-for="SessionResponse.LocationID" class="form-control" asp-items="ViewBag.LocationID"></select>
-                <span asp-validation-for="SessionResponse.LocationID" class="text-danger"></span>
+                <label asp-for="SessionResponse.Chairs" class="control-label"></label>
+                <input type="text" asp-for="SessionResponse.Chairs" class="form-control" />
+                @*<span asp-validation-for="SessionResponse.Chairs" class="text-danger"></span>*@
             </div>
+
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="reset" class="btn btn-danger" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-page="./Index">Back to List</a>
+    <a asp-page="/Conference/Index" asp-route-conference_id=@Model.SessionResponse.ID>Back to Conference</a>
 </div>
 
 @section Scripts {

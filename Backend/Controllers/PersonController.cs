@@ -78,6 +78,22 @@ namespace BackEnd.Controllers
         [HttpPost]
         public async Task<ActionResult<Person>> PostPerson(Person person)
         {
+            var exists = _context.Person.Any(e =>
+                    e.First_Name.Equals(person.First_Name, System.StringComparison.InvariantCultureIgnoreCase) &&
+                    e.Last_Name.Equals(person.Last_Name, System.StringComparison.InvariantCultureIgnoreCase) &&
+                    e.Details.Equals(person.Details, System.StringComparison.InvariantCultureIgnoreCase)
+              );
+
+            if (exists) //check if there is a entry in the table with the same name and details. If it exists get it and return the the object
+            {
+                var pers = _context.Person.Where(e =>
+                        e.First_Name.Equals(person.First_Name, System.StringComparison.InvariantCultureIgnoreCase) &&
+                        e.Last_Name.Equals(person.Last_Name, System.StringComparison.InvariantCultureIgnoreCase) &&
+                        e.Details.Equals(person.Details, System.StringComparison.InvariantCultureIgnoreCase)
+
+               ).FirstOrDefault();
+                return CreatedAtAction("GetPerson", new { id = pers.ID }, pers);
+            }
             _context.Person.Add(person);
             await _context.SaveChangesAsync();
 

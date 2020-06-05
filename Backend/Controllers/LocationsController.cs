@@ -78,6 +78,21 @@ namespace BackEnd
         [HttpPost]
         public async Task<ActionResult<Location>> PostLocation(Location location)
         {
+
+            var exists = _context.Location.Any(e =>
+                  e.Name.Equals(location.Name, System.StringComparison.InvariantCultureIgnoreCase) &&
+                  e.Details.Equals(location.Details, System.StringComparison.InvariantCultureIgnoreCase)
+             );
+
+            if (exists) //check if there is a entry in the table with the same name and details. If it exists get it and return the the object
+            {
+                var loc = _context.Location.Where(e =>
+                    e.Name.Equals(location.Name, System.StringComparison.InvariantCultureIgnoreCase) &&
+                    e.Details.Equals(location.Details, System.StringComparison.InvariantCultureIgnoreCase)
+               ).FirstOrDefault();
+                return CreatedAtAction("GetLocation", new { id = loc.ID }, loc);
+            }
+
             _context.Location.Add(location);
             await _context.SaveChangesAsync();
 

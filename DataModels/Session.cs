@@ -6,6 +6,7 @@ namespace DataModels
 {
     public class Session
     {
+
         public Session() { }
         public Session(Session session) //copy constructor
         {
@@ -16,6 +17,7 @@ namespace DataModels
             ConferenceID = session.ConferenceID;
             LocationID = session.LocationID;
         }
+
 
         [Key]
         public int ID { get; set; }
