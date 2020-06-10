@@ -35,9 +35,12 @@
     <div class="form-group">
 
         <label asp-for="Conference.Tags"></label>
-        @foreach (var item in Model.Conference.Tags)
+        @if (Model.Conference.Tags != null && Model.Conference.Tags.Any())
         {
-            <input asp-for="@item" class="form-control" />
+            @foreach (var item in Model.Conference.Tags)
+            {
+                <input asp-for="@item" class="form-control" />
+            }
         }
 
 

@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using FrontEnd.Models;
 using FrontEnd.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Threading.Tasks;
 
 namespace FrontEnd.Pages.Conference
 {
@@ -13,26 +11,44 @@ namespace FrontEnd.Pages.Conference
         public IApiClientService ApiClient { get; }
 
         [BindProperty]
-        public DataModels.Conference conference { get; set; }
+        public ConferenceResponse Conference { get; set; }
 
         public DeleteModel(IApiClientService apiClientService)
         {
             ApiClient = apiClientService;
         }
 
-        public void OnGet(int conference_id)
+        public async Task<IActionResult> OnGetAsync(int? conference_id)
         {
-            conference = ApiClient.GetConferenceAsync(conference_id).Result;
+            if (conference_id == null)
+            {
+                return NotFound();
+            }
 
+
+            Conference = ApiClient.GetConferenceAsync(conference_id.Value).Result;
+
+            if (Conference == null)
+            {
+                return NotFound();
+            }
+
+            return Page();
         }
-        public IActionResult OnPost(int conference_id)
+
+        public async Task<IActionResult> OnPostAsync(int? conference_id)
         {
-            var result = ApiClient.DeleteConferenceAsync(conference_id).Result;
-            if(result == false)
+            if (conference_id == null)
+            {
+                return NotFound();
+            }
+
+            var result = ApiClient.DeleteConferenceAsync(conference_id.Value).Result;
+            if (result == false)
                 return RedirectToPage("/Error");
 
-            return RedirectToPage("/Index");
 
+            return RedirectToPage("/Index");
 
         }
     }

@@ -1,6 +1,6 @@
 ﻿@using Models
 @using System.Globalization;
-@model SessionResponse;
+@model SessionResponse
 
 <div class="card">
 
@@ -11,9 +11,9 @@
             </button>
 
             <div class="r input-group-append">
-                <button class=" btn btn-outline-secondary">
-                    <i class="oi oi-plus"></i>
-                </button>
+                <a asp-page="/Talk/Add" asp-route-session_id="@Model.ID" class="btn btn-outline-secondary oi oi-plus d-flex justify-content-center align-items-center"></a>
+                <a asp-page="/Session/Edit" asp-route-session_id="@Model.ID" class="btn btn-outline-primary oi oi-pencil d-flex justify-content-center align-items-center"></a>
+                <a asp-page="/Session/Delete" asp-route-session_id="@Model.ID" class="btn btn-outline-danger oi oi-trash d-flex justify-content-center align-items-center"></a>
             </div>
 
 

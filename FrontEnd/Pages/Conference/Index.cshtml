@@ -8,8 +8,13 @@
     <div class="Sessions">
 
         <h1>@Model.conference.Name</h1>
-        <a asp-page="/Session/Add" asp-route-conference_id="@Model.conference.ID" class="btn btn-secondary oi oi-plus"></a>
-        <a asp-page="/Conference/Delete" asp-route-conference_id="@Model.conference.ID" class="btn btn-danger oi oi-trash"></a>
+        <div class="input-group">
+
+            <a asp-page="/Session/Add" asp-route-conference_id="@Model.conference.ID" class="btn btn-secondary oi oi-plus d-flex justify-content-center align-items-center"></a>
+            <a asp-page="/Conference/Edit" asp-route-conference_id="@Model.conference.ID" class="btn btn-primary oi oi-pencil d-flex justify-content-center align-items-center"></a>
+            <a asp-page="/Conference/Delete" asp-route-conference_id="@Model.conference.ID" class="btn btn-danger oi oi-trash d-flex justify-content-center align-items-center"></a>
+        </div>
+
         <div id="accordion">
 
             @foreach (var session in Model.Sessions)

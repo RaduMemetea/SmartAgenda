@@ -70,11 +70,12 @@ namespace FrontEnd.Services
 
         #region PUT
         Task<bool> UpdateConferenceAsync(ConferenceResponse conference);
-
+        Task<Tuple<bool, int>> UpdateSessionAsync(SessionResponse sessionResponse);// Tuple<bool, int> is used to indicate if the request was succesful or not and the error codes(int<=0) or session id
         #endregion
 
         #region DELETE
         Task<bool> DeleteConferenceAsync(int conference_id);
+        Task<bool> DeleteSessionAsync(int session_id);
 
         #endregion
     }

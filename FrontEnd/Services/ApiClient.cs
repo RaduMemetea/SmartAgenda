@@ -392,6 +392,38 @@ namespace FrontEnd.Services
 
         }
 
+        public async Task<Tuple<bool, int>> UpdateSessionAsync(SessionResponse sessionResponse)
+        {
+            Session converted = sessionResponse.GetSession();
+
+            var location = CreateLocationAsync(sessionResponse.Location).Result;
+            converted.LocationID = location != null ? location.ID : 0;              // if the location is not null then initialize with the response id otherwise 0
+
+            if (converted.LocationID == 0)
+                return new Tuple<bool, int>(false, -1);
+
+            var response = await httpClient.PutAsJsonAsync($"/api/Sessions/{sessionResponse.ID}", converted);
+            if (!response.IsSuccessStatusCode)
+                return new Tuple<bool, int>(false, 0);
+
+            if (sessionResponse.Chairs != null && sessionResponse.Chairs.Any())
+                foreach (var chair in sessionResponse.Chairs)
+                {
+                    var chairsResponse = CreatePersonAsync(chair).Result != null ? CreatePersonAsync(chair).Result.ID : 0;
+                    if (chairsResponse == 0)
+                        return new Tuple<bool, int>(false, -2);
+
+                    await CreateSession_ChairAsync(new Session_Chair
+                    {
+                        SessionID = converted.ID,
+                        PersonID = chairsResponse
+                    });
+                }
+
+            return new Tuple<bool, int>(true, converted.ID);
+
+
+        }
 
         #endregion
 
@@ -407,6 +439,7 @@ namespace FrontEnd.Services
 
         }
 
+
         public async Task<bool> DeleteConference_TagsAsync(int conference_id, IEnumerable<string> tags)
         {
             foreach (var tag in tags)
@@ -419,6 +452,17 @@ namespace FrontEnd.Services
 
             }
             return true;
+        }
+
+        public async Task<bool> DeleteSessionAsync(int session_id)
+        {
+            var response = await httpClient.DeleteAsync($"/api/Sessions/{session_id}");
+            if (!response.IsSuccessStatusCode)
+                return false;
+
+            response.EnsureSuccessStatusCode();
+            return true;
+
         }
 
 

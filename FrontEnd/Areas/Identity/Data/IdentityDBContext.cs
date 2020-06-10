@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using FrontEnd.Areas.Identity.Data;
-using Microsoft.AspNetCore.Identity;
+﻿using FrontEnd.Areas.Identity.Data;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,8 +6,7 @@ namespace FrontEnd.Data
 {
     public class IdentityDBContext : IdentityDbContext<User>
     {
-        public IdentityDBContext(DbContextOptions<IdentityDBContext> options)
-            : base(options)
+        public IdentityDBContext(DbContextOptions<IdentityDBContext> options) : base(options)
         {
         }
 
