@@ -14,9 +14,9 @@ namespace DataModels
             End_Date = conference.End_Date;
         }
 
-        public Conference(int iD, string name, DateTimeOffset start_Date, DateTimeOffset end_Date)
+        public Conference(int id, string name, DateTime start_Date, DateTime end_Date)
         {
-            ID = iD;
+            ID = id;
             Name = name;
             Start_Date = start_Date;
             End_Date = end_Date;
@@ -28,9 +28,9 @@ namespace DataModels
         [Required, MinLength(3), MaxLength(20)]
         public String Name { get; set; }
 
-        public DateTimeOffset Start_Date { get; set; }
+        public DateTime Start_Date { get; set; }
         
-        public DateTimeOffset End_Date { get; set; }
+        public DateTime End_Date { get; set; }
 
 
     }

@@ -3,58 +3,48 @@
 @{
     ViewData["Title"] = "Edit";
 }
-<form method="post">
+<h1>Edit conference "@Model.Conference.Name"</h1>
 
-    <h4>Adding a Conference</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Conference.Name" class="control-label"></label>
+                <input asp-for="Conference.Name" class="form-control" />
+                <span asp-validation-for="Conference.Name" class="text-danger"></span>
+            </div>
 
-    <input type="hidden" asp-for="Conference.ID" value=0 />
+            <div class="form-group">
+                <label asp-for="Conference.Start_Date" class="control-label"></label>
+                <input asp-for="Conference.Start_Date" class="form-control" />
+                <span asp-validation-for="Conference.Start_Date" class="text-danger"></span>
+            </div>
 
-    <div class="form-group">
+            <div class="form-group">
+                <label asp-for="Conference.End_Date" class="control-label"></label>
+                <input asp-for="Conference.End_Date" class="form-control" />
+                <span asp-validation-for="Conference.End_Date" class="text-danger"></span>
+            </div>
 
-        <label asp-for="Conference.Name"></label>
-        <input asp-for="Conference.Name" class="form-control" />
-        <span class="text-danger" asp-validation-for="Conference.Name"></span>
+            <div class="form-group">
+                <label asp-for="Conference.Tags" class="control-label"></label>
+                <input type="text" asp-for="tagList" class="form-control" />
+                @*<span asp-validation-for="SessionResponse.Hosts" class="text-danger"></span>*@
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Edit" class="btn btn-primary" />
+            </div>
+        </form>
     </div>
+</div>
 
-    <div class="form-group">
+<div>
+    <a class="btn btn-secondary" asp-page="/Index">Back</a>
+</div>
 
-        <label asp-for="Conference.Start_Date"></label>
-        <input type="date" asp-for="Conference.Start_Date" class="form-control" />
-        <span class="text-danger" asp-validation-for="Conference.Start_Date"></span>
-
-    </div>
-
-    <div class="form-group">
-
-        <label asp-for="Conference.End_Date"></label>
-        <input type="date" asp-for="Conference.End_Date" class="form-control" />
-        <span class="text-danger" asp-validation-for="Conference.End_Date"></span>
-
-    </div>
-
-    <div class="form-group">
-
-        <label asp-for="Conference.Tags"></label>
-        @if (Model.Conference.Tags != null && Model.Conference.Tags.Any())
-        {
-            @foreach (var item in Model.Conference.Tags)
-            {
-                <input asp-for="@item" class="form-control" />
-            }
-        }
-
-
-    </div>
-
-
-    <button type="submit" class=" btn btn-primary">Save</button>
-
-    <button type="reset" class=" btn btn-danger">Clear</button>
-
-</form>
-
-@section Scripts
-{
-    <partial name="_ValidationScriptsPartial" />
-
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

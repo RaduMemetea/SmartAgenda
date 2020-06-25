@@ -4,9 +4,7 @@ namespace DataModels
 {
     public class Talk
     {
-        public Talk()
-        {
-        }
+        public Talk() { }
 
         public Talk(Talk talk)
         {

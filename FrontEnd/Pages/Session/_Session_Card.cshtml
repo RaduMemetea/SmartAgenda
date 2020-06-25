@@ -22,28 +22,26 @@
 
     <div id="collapse-@Model.ID" class="collapse" aria-labelledby="heading-@Model.ID" data-parent="#accordion">
         <div class="card-body p-1">
-            @if (Model.Chairs != null && Model.Chairs.Any())
+            @if (Model.Hosts != null && Model.Hosts.Any())
             {
-                <div class="Chair">
+                <div class="Host">
 
-                    <b>Chairs: </b>
+                    <b>Hosts: </b>
 
-                    @for (int i = 0; i < Model.Chairs.Count(); i++)
+                    @for (int i = 0; i < Model.Hosts.Count(); i++)
                     {
-                        <a>@Model.Chairs.ElementAt(i).First_Name @Model.Chairs.ElementAt(i).Last_Name</a>
+                        <a>@Model.Hosts.ElementAt(i).FullName</a>
 
-                        @if (Model.Chairs.Count() > 1 && i == (Model.Chairs.Count() - 2))
+                        @if (Model.Hosts.Count() > 1 && i == (Model.Hosts.Count() - 2))
                         {
                             @:and
                         }
 
 
-                        @if (Model.Chairs.Count() > 1 && i < (Model.Chairs.Count() - 2))
+                        @if (Model.Hosts.Count() > 1 && i < (Model.Hosts.Count() - 2))
                         {
                             @:,
                         }
-
-
                     }
 
                 </div>
@@ -68,7 +66,7 @@
 
             <div class="Location">
                 <b>Location: </b>
-                <span>@Model.Location.Name - @Model.Location.Details</span>
+                <span>@Model.Location.GetFullInfo</span>
             </div>
 
         </div>

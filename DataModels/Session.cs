@@ -22,8 +22,8 @@ namespace DataModels
         [Key]
         public int ID { get; set; }
         public String Name { get; set; }
-        public DateTimeOffset Start_Hour { get; set; }
-        public DateTimeOffset End_Hour { get; set; }
+        public DateTime Start_Hour { get; set; }
+        public DateTime End_Hour { get; set; }
 
         [ForeignKey("Conference")]
         public int ConferenceID { get; set; }

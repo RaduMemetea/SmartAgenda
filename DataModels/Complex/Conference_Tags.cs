@@ -6,6 +6,8 @@ namespace DataModels.Complex
 {
     public class Conference_Tags
     {
+        public Conference_Tags() { }
+
         public Conference_Tags(int conferenceID, string tagID)
         {
             ConferenceID = conferenceID;

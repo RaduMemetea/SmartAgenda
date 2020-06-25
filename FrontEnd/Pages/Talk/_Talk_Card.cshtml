@@ -2,7 +2,7 @@
 @using System.Globalization
 @model TalksResponse
 
-<div class="ro ">
+<div class="ro">
 
     <div class="d-flex flex-row ro-content border-bottom">
         <div class="ro-content my-auto">
@@ -47,6 +47,10 @@
                 <b>@Model.Name</b>
             </div>
 
+        </div>
+        <div class="ro-content d-flex my-auto ml-auto p-2">
+            <a asp-page="/Talk/Edit" asp-route-talk_id="@Model.ID" class="btn btn-outline-primary oi oi-pencil d-flex justify-content-center align-items-center"></a>
+            <a asp-page="/Talk/Delete" asp-route-talk_id="@Model.ID" class="btn btn-outline-danger oi oi-trash d-flex justify-content-center align-items-center"></a>
         </div>
 
     </div>

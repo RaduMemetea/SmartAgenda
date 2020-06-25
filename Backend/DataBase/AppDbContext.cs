@@ -13,15 +13,15 @@ namespace BackEnd.DataBase
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
-            modelBuilder.Entity<Session_Chair>()
+            modelBuilder.Entity<Session_Host>()
                 .HasKey(k => new { k.SessionID, k.PersonID });
 
-            modelBuilder.Entity<Session_Chair>()
+            modelBuilder.Entity<Session_Host>()
                 .HasOne<Session>()
                 .WithMany()
                 .HasForeignKey(fk => fk.SessionID);
 
-            modelBuilder.Entity<Session_Chair>()
+            modelBuilder.Entity<Session_Host>()
                 .HasOne<Person>()
                 .WithMany()
                 .HasForeignKey(fk => fk.PersonID);
@@ -83,7 +83,7 @@ namespace BackEnd.DataBase
         public DbSet<Conference> Conference { get; set; }
         public DbSet<Person> Person { get; set; }
         public DbSet<Session> Session { get; set; }
-        public DbSet<Session_Chair> Session_Chair { get; set; }
+        public DbSet<Session_Host> Session_Host { get; set; }
         public DbSet<Talk> Talk { get; set; }
         public DbSet<Session_Talks> Session_Talks { get; set; }
         public DbSet<Tag> Tag { get; set; }

@@ -10,7 +10,16 @@ namespace DataModels
         public String Details { get; set; }
 
         [NotMapped]
-        public string GetFullInfo { get { return $"{this.Name} - {this.Details}"; } }
+        public string GetFullInfo
+        {
+            get
+            {
+                if (Details == null || Details.Equals(""))
+                    return $"{this.Name}";
+                else
+                    return $"{this.Name} - {this.Details}";
+            }
+        }
 
     }
 }

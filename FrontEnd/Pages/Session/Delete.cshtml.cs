@@ -33,7 +33,7 @@ namespace FrontEnd.Pages.Session
                 return NotFound();
             }
 
-            SessionResponse = ApiClient.GetSessionAsync(session_id.Value).Result;
+            SessionResponse = ApiClient.GetSessionResponseAsync(session_id.Value).Result;
 
             if (SessionResponse == null)
             {
@@ -57,7 +57,7 @@ namespace FrontEnd.Pages.Session
                 return NotFound();
             }
 
-            conference = ApiClient.GetConferenceAsync(ApiClient.GetSessionAsync(session_id.Value).Result.ConferenceID).Result;
+            conference = ApiClient.GetConferenceAsync(ApiClient.GetSessionResponseAsync(session_id.Value).Result.ConferenceID).Result;
 
             var result = ApiClient.DeleteSessionAsync(session_id.Value).Result;
             if (result == false)

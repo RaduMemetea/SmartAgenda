@@ -21,16 +21,17 @@
 </div>
 
 <div class="Conferences">
-
-    <h1>Conference List</h1>
-
+        <h1>Conference List</h1>
+    <div class="input-group">
+        <a asp-page="/Conference/Add" class="btn btn-secondary oi oi-plus d-flex justify-content-center align-items-center"></a>
+    </div>
 
     @foreach (var conf in Model.Conferences)
     {
         <div class="col-md-4 mx-auto p-2">
             <partial name="Conference/_Conference_Card" model="conf" />
         </div>
-        
+
     }
 
 </div>

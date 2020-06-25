@@ -17,9 +17,12 @@
 
         <div id="accordion">
 
-            @foreach (var session in Model.Sessions)
+            @if(Model.Sessions != null && Model.Sessions.Any())
             {
-                <partial name="Session/_Session_Card" model="session" />
+                @foreach (var session in Model.Sessions)
+                {
+                    <partial name="Session/_Session_Card" model="session" />
+                }
             }
 
         </div>

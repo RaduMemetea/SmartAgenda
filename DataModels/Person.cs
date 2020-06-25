@@ -11,6 +11,6 @@ namespace DataModels
         public String Details { get; set; }
 
         [NotMapped]
-        public string GetFullName { get { return $"{this.First_Name} {this.Last_Name}"; } }
+        public string FullName { get { return $"{this.First_Name} {this.Last_Name}"; } }
     }
 }

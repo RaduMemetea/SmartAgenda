@@ -4,9 +4,11 @@ namespace DataModels
 {
     public class Tag
     {
-        public Tag(string iD, string description="")
+        public Tag() { }
+
+        public Tag(string id, string description = "")
         {
-            ID = iD;
+            ID = id;
             Description = description;
         }
 

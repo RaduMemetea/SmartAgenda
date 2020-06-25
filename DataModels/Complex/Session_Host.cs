@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DataModels.Complex
 {
-    public class Session_Chair
+    public class Session_Host
     {
         [Key]
         [ForeignKey("Session")]

@@ -29,10 +29,11 @@ namespace FrontEnd.Pages.Conference
             if (conference == null)
                 return RedirectToPage("/Error");
 
-            Sessions = await _apiClient.GetSessionsByConference(conference.ID);
-            if (Sessions is null || Sessions.Count == 0)
+            var response = _apiClient.GetSessionsByConference(conference.ID).Result;
+            if (response is null || !response.Any())
                 Sessions = new List<SessionResponse>() { };
-
+            else
+                Sessions = response.ToList();
 
             return Page();
         }

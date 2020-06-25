@@ -30,10 +30,16 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Conference.End_Date)
         </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Conference.Tags)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Conference.ParseTagString)
+        </dd>
     </dl>
     
     <form method="post">
         <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a class="btn btn-primary"  asp-page="/Conference/Index" asp-route-conference_id=@Model.Conference.ID>Back to Conference</a>
+        <a class="btn btn-secondary"  asp-page="/Conference/Index" asp-route-conference_id=@Model.Conference.ID>Back to Conference</a>
     </form>
 </div>

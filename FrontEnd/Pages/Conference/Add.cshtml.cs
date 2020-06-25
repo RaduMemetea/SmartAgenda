@@ -1,21 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using DataModels;
 using FrontEnd.Models;
 using FrontEnd.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System;
+using System.Collections.Generic;
 
 namespace FrontEnd.Pages.Conference
 {
     public class AddModel : PageModel
-    {       
+    {
         public IApiClientService ApiClient { get; }
 
         [BindProperty]
         public ConferenceResponse Conference { get; set; }
 
+        [BindProperty]
+        public string tagList { get; set; }
 
         public AddModel(IApiClientService apiClientService)
         {
@@ -31,10 +32,10 @@ namespace FrontEnd.Pages.Conference
             if (!ModelState.IsValid)
                 return Page();
             Conference.ID = 0;
-            ///TODO
-            ///COnfigure the input of the Conference.Tags to be as a List<string>
 
-            var result = ApiClient.CreateConferenceAsync(Conference).Result;
+            Conference.ParseTagString = tagList;
+
+            var result = ApiClient.CreateConferenceResponseAsync(Conference).Result;
             if (result.Item1 == false)
                 return RedirectToPage("/Error");
 

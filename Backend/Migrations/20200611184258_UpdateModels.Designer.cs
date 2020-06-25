@@ -3,14 +3,16 @@ using System;
 using BackEnd.DataBase;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BackEnd.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200611184258_UpdateModels")]
+    partial class UpdateModels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -32,7 +34,7 @@ namespace BackEnd.Migrations
                     b.ToTable("Conference_Tags");
                 });
 
-            modelBuilder.Entity("DataModels.Complex.Session_Host", b =>
+            modelBuilder.Entity("DataModels.Complex.Session_Chair", b =>
                 {
                     b.Property<int>("SessionID")
                         .HasColumnType("int");
@@ -44,7 +46,7 @@ namespace BackEnd.Migrations
 
                     b.HasIndex("PersonID");
 
-                    b.ToTable("Session_Host");
+                    b.ToTable("Session_Chair");
                 });
 
             modelBuilder.Entity("DataModels.Complex.Session_Talks", b =>
@@ -217,7 +219,7 @@ namespace BackEnd.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("DataModels.Complex.Session_Host", b =>
+            modelBuilder.Entity("DataModels.Complex.Session_Chair", b =>
                 {
                     b.HasOne("DataModels.Person", null)
                         .WithMany()
