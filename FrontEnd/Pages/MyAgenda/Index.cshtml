@@ -1,0 +1,43 @@
+﻿@page
+@model FrontEnd.Pages.MyAgenda.IndexModel
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>My Agenda</h1>
+
+
+@if (Model.Entry != null && Model.Entry.Any())
+{
+
+    @if (true)
+    {
+        <div>
+            <h2>@Model.Entry[0].Item1.Name:</h2>
+            <div id="accordion">
+                @if (@Model.Entry[0].Item2 != null)
+                {
+                    <partial name="Session/_Session_Card" model="@Model.Entry[0].Item2" />
+                }
+                @if (@Model.Entry[1].Item2 != null)
+                {
+                    <partial name="Session/_Session_Card" model="@Model.Entry[1].Item2" />
+                }
+            </div>
+        </div>
+        <div>
+            <h2>@Model.Entry[2].Item1.Name:</h2>
+            <div id="accordion">
+                @if (@Model.Entry[2].Item2 != null)
+                {
+                    <partial name="Session/_Session_Card" model="@Model.Entry[2].Item2" />
+                }
+            </div>
+        </div>
+
+    }
+    <hr />
+
+
+
+}

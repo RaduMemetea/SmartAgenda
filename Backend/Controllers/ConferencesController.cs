@@ -39,13 +39,13 @@ namespace BackEnd.Controllers
 
         }
         // GET: api/Conferences/5/Sessions
-        [HttpGet("{id_conference}/Sessions")]
-        public async Task<ActionResult<IEnumerable<Session>>> GetConferenceSessions(int id_conference)
+        [HttpGet("{id}/Sessions")]
+        public async Task<ActionResult<IEnumerable<Session>>> GetConferenceSessions(int id)
         {
-            if (!ConferenceExists(id_conference))
+            if (!ConferenceExists(id))
                 return BadRequest("Conference does not exists!");
 
-            var sessions = await _context.Session.Where(x => x.ConferenceID == id_conference).ToListAsync();
+            var sessions = await _context.Session.Where(x => x.ConferenceID == id).ToListAsync();
 
             if (sessions == null || sessions.Count == 0)
                 return NotFound();
