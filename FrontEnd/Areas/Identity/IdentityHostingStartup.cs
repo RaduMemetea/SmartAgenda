@@ -1,6 +1,7 @@
 ﻿using System;
 using FrontEnd.Areas.Identity.Data;
 using FrontEnd.Data;
+using FrontEnd.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;
@@ -22,6 +23,8 @@ namespace FrontEnd.Areas.Identity
 
                 services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
                     .AddEntityFrameworkStores<IdentityDBContext>();
+
+                services.AddScoped<IApiIdentityService, IdentityClient>();
 
                 services.Configure<IdentityOptions>(options =>
                 {

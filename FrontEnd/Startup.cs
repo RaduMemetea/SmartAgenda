@@ -6,7 +6,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
 using Microsoft.EntityFrameworkCore;
-
+using FrontEnd.Areas.Identity.Data;
+using FrontEnd.Data;
 
 namespace FrontEnd
 {
@@ -30,7 +31,7 @@ namespace FrontEnd
                 client.BaseAddress = new Uri(Configuration["ServiceUrl"]);
             });
 
-  
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
