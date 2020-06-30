@@ -1,14 +1,17 @@
 ﻿using FrontEnd.Models;
+using FrontEnd.Models.Identity;
 using FrontEnd.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace FrontEnd.Pages.Talk
 {
+    [Authorize]
     public class AddModel : PageModel
     {
         public IApiClientService ApiClient { get; }
-
+        public IApiIdentityService IdentityClient { get; }
         [BindProperty]
         public TalksResponse Talk { get; set; }
 
@@ -20,9 +23,10 @@ namespace FrontEnd.Pages.Talk
         public int ConferenceID { get; set; }
 
 
-        public AddModel(IApiClientService apiClientService)
+        public AddModel(IApiClientService apiClientService, IApiIdentityService apiIdentityService)
         {
             ApiClient = apiClientService;
+            IdentityClient = apiIdentityService;
         }
 
         public IActionResult OnGet(int? session_id)
@@ -33,6 +37,9 @@ namespace FrontEnd.Pages.Talk
             Session = ApiClient.GetSessionAsync(session_id.Value).Result;
 
             if(Session is null)
+                return NotFound();
+
+            if (IdentityClient.GetUserOwnershipAsync(new UserOwnership { UserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value, ConferenceId = Session.ConferenceID }).Result == null)
                 return NotFound();
 
             return Page();

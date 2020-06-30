@@ -1,13 +1,12 @@
-﻿using FrontEnd.Services;
+﻿using FrontEnd.Data;
+using FrontEnd.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
-using Microsoft.EntityFrameworkCore;
-using FrontEnd.Areas.Identity.Data;
-using FrontEnd.Data;
 
 namespace FrontEnd
 {
@@ -30,6 +29,11 @@ namespace FrontEnd
             {
                 client.BaseAddress = new Uri(Configuration["ServiceUrl"]);
             });
+
+            var optionsBuilder = new DbContextOptionsBuilder<IdentityDBContext>();
+            optionsBuilder.UseMySql(Configuration.GetConnectionString("IdentityDBContextConnection"));
+
+            services.AddSingleton<IApiIdentityService>(new IdentityClient(optionsBuilder.Options));
 
 
         }

@@ -1,54 +1,69 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using FrontEnd.Models;
-using FrontEnd.Models.Identity;
+﻿using FrontEnd.Models;
 using FrontEnd.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore.Internal;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Cryptography.X509Certificates;
+using System.Threading.Tasks;
 
 namespace FrontEnd.Pages.MyAgenda
 {
     [Authorize]
     public class IndexModel : PageModel
     {
-        public IApiClientService apiClient { get; }
-        public IApiIdentityService identityClient{ get; }
+        public IApiClientService ApiClient { get; }
+        public IApiIdentityService IdentityClient { get; }
 
-        public List<Tuple<DataModels.Conference, SessionResponse, TalksResponse>> Entry { get; set; }
+        public List<AgendaEntry> Entry { get; set; }
 
         public IndexModel(IApiClientService apiClientService, IApiIdentityService apiIdentityService)
         {
-            apiClient = apiClientService;
-            identityClient = apiIdentityService;
+            ApiClient = apiClientService;
+            IdentityClient = apiIdentityService;
         }
 
         public async Task<IActionResult> OnGetAsync()
         {
-
-          //var result = await identityClient.AddUserOwnershipAsync(new UserOwnership { UserId = "a7d3d8d9-0a37-404b-ae30-b5ed964da29c", ConferenceId = 1 });
             var id = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value;
 
-            Entry = new List<Tuple<DataModels.Conference, SessionResponse, TalksResponse>>();
-            Entry.Add(new Tuple<DataModels.Conference, SessionResponse, TalksResponse>(
-                    apiClient.GetConferenceAsync(1).Result,
-                    apiClient.GetSessionResponseAsync(3).Result,
-                    apiClient.GetTalkResponseAsync(18).Result
-            ));
+            var events = IdentityClient.GetUserAgendaAsync(id).Result;
 
-            Entry.Add(new Tuple<DataModels.Conference, SessionResponse, TalksResponse>(
-                    apiClient.GetConferenceAsync(1).Result,
-                    apiClient.GetSessionResponseAsync(5).Result,
-                    apiClient.GetTalkResponseAsync(21).Result
-            ));
+            if (events == null || !events.Any()) return Page();
 
-            Entry.Add(new Tuple<DataModels.Conference, SessionResponse, TalksResponse>(
-                    apiClient.GetConferenceAsync(30).Result,
-                    apiClient.GetSessionResponseAsync(44).Result,
-                    null
-            ));
+            Entry = new List<AgendaEntry>();
+
+            var l = events.GroupBy(x => x.ConferenceId);
+
+            foreach (var conference in events.GroupBy(x=> x.ConferenceId))
+            {
+                var conf = ApiClient.GetConferenceAsync(conference.Key).Result.GetConference;
+                List<SessionResponse> sessions = new List<SessionResponse>();
+                foreach (var session in conference.GroupBy(x => x.SessionId))
+                {
+                    var ses = ApiClient.GetSessionResponseAsync(session.Key).Result;
+                    List<TalksResponse> tks= new List<TalksResponse>();
+
+                    foreach (var talk in session)
+                        tks.Add(ApiClient.GetTalkResponseAsync(talk.TalkId).Result);
+
+                    ses.Talks = tks.ToArray();
+                    sessions.Add(ses);
+                }
+
+                Entry.Add(new AgendaEntry
+                {
+                    Conference =conf,
+                    Sessions = sessions
+                });
+                
+
+            }
+
+
             return Page();
         }
     }

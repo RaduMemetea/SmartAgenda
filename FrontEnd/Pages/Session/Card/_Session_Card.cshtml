@@ -1,0 +1,40 @@
+﻿@using Models
+@using System.Globalization;
+@model SessionResponse
+@inject FrontEnd.Services.IApiIdentityService identityClient
+
+
+
+<div class="card">
+
+    <partial name="Session/Card/_Session_Card_Header" model="Model"/>
+
+
+    <div id="collapse-@Model.ID" class="collapse" aria-labelledby="heading-@Model.ID" data-parent="#accordion">
+        <div class="card-body p-1">
+
+            <partial name="Session/Card/_Session_Card_BodyDetails" model="Model" />
+
+            @if (Model.Talks != null && Model.Talks.Any())
+            {
+                <div class="Talks">
+
+                    <div class="card">
+                        <div class="d-flex flex-column ro">
+                            @foreach (var talk in Model.Talks)
+                            {
+                                <partial name="Talk/Card/_Talk_Card" model="talk" />
+                            }
+
+                        </div>
+
+                    </div>
+                </div>
+            }
+
+
+
+        </div>
+    </div>
+
+</div>

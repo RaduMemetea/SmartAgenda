@@ -59,6 +59,27 @@ namespace FrontEnd.Models
             }
         }
 
+        public string GetPersonsBeautyfied()
+        {
+            if (Persons == null || !Persons.Any()) return "";
+
+            string strBeautyfied = "";
+            for (int i = 0; i < Persons.Count(); i++)
+            {
+                strBeautyfied += Persons.ElementAt(i).FullName;
+
+                if (Persons.Count() > 1 && i == (Persons.Count() - 2))
+                    strBeautyfied += " and ";
+
+                if (Persons.Count() > 1 && i < (Persons.Count() - 2))
+                    if (i != 0)
+                        strBeautyfied += ", ";
+
+            }
+
+            return strBeautyfied;
+        }
+
         public string ParsePersonsString
         {
             get

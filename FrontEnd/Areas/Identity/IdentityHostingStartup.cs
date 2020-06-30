@@ -24,7 +24,6 @@ namespace FrontEnd.Areas.Identity
                 services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
                     .AddEntityFrameworkStores<IdentityDBContext>();
 
-                services.AddScoped<IApiIdentityService, IdentityClient>();
 
                 services.Configure<IdentityOptions>(options =>
                 {

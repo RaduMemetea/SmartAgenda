@@ -8,22 +8,26 @@ using Microsoft.EntityFrameworkCore;
 
 using FrontEnd.Models;
 using FrontEnd.Services;
+using Microsoft.AspNetCore.Authorization;
+using FrontEnd.Models.Identity;
 
 namespace FrontEnd.Pages.Session
 {
+    [Authorize]
     public class DeleteModel : PageModel
     {
         public IApiClientService ApiClient { get; }
-      
+        public IApiIdentityService IdentityClient { get; }
         [BindProperty]
         public SessionResponse SessionResponse { get; set; }
 
         [BindProperty]
         public DataModels.Conference conference { get; set; }
 
-        public DeleteModel(IApiClientService apiClientService)
+        public DeleteModel(IApiClientService apiClientService, IApiIdentityService apiIdentityService)
         {
             ApiClient = apiClientService;
+            IdentityClient = apiIdentityService;
         }
 
         public async Task<IActionResult> OnGetAsync(int? session_id)
@@ -47,6 +51,10 @@ namespace FrontEnd.Pages.Session
                 return NotFound();
             }
 
+            if (IdentityClient.GetUserOwnershipAsync(new UserOwnership { UserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value, ConferenceId = conference.ID }).Result == null)
+                return base.NotFound();
+
+
             return Page();
         }
 
@@ -63,7 +71,7 @@ namespace FrontEnd.Pages.Session
             if (result == false)
                 return RedirectToPage("/Error");
 
-
+            
             return RedirectToPage("/Conference/Index", new { conference_id = conference.ID });
 
         }

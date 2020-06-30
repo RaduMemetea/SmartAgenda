@@ -1,6 +1,8 @@
 ﻿using DataModels;
 using FrontEnd.Models;
+using FrontEnd.Models.Identity;
 using FrontEnd.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
@@ -10,6 +12,7 @@ using System.Threading.Tasks;
 
 namespace FrontEnd.Pages.Session
 {
+    [Authorize]
     public class EditModel : PageModel
     {
 
@@ -17,14 +20,16 @@ namespace FrontEnd.Pages.Session
         [BindProperty]
         public SessionResponse SessionResponse { get; set; }
         public IApiClientService ApiClient { get; }
+        public IApiIdentityService IdentityClient { get; }
         public ConferenceResponse Conference { get; private set; }
         [BindProperty]
         public string HostsList { get; set; } = "";
 
 
-        public EditModel(IApiClientService apiClient)
+        public EditModel(IApiClientService apiClient, IApiIdentityService apiIdentityService)
         {
             ApiClient = apiClient;
+            IdentityClient = apiIdentityService;
         }
 
 
@@ -43,6 +48,9 @@ namespace FrontEnd.Pages.Session
             }
 
             Conference = ApiClient.GetConferenceAsync(SessionResponse.ConferenceID).Result;
+
+            if (IdentityClient.GetUserOwnershipAsync(new UserOwnership { UserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value, ConferenceId = Conference.ID }).Result == null)
+                return NotFound();
 
             if (SessionResponse.Hosts != null && SessionResponse.Hosts.Any())
             {

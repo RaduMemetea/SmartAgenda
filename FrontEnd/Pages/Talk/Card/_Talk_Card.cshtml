@@ -1,0 +1,20 @@
+﻿@using Models
+@using System.Globalization
+@model TalksResponse
+
+<div class="ro-content my-auto p-2">
+    @Model.Hour.ToString(@"HH\:mm", CultureInfo.InvariantCulture)
+</div>
+
+<div class="ro-content d-flex flex-column cr my-auto">
+    <div class="cr ">
+        <a>@Model.GetPersonsBeautyfied()</a>
+    </div>
+
+    <div class="cr my-auto ">
+        <b>@Model.Name</b>
+    </div>
+
+</div>
+
+<partial name="Talk/Card/_Talk_Card_Controls" model="Model" />

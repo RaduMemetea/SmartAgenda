@@ -1,4 +1,5 @@
 ﻿using FrontEnd.Models;
+using FrontEnd.Models.Identity;
 using FrontEnd.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -9,7 +10,7 @@ namespace FrontEnd.Pages.Talk
     public class EditModel : PageModel
     {
         public IApiClientService ApiClient { get; }
-
+        public IApiIdentityService IdentityClient { get; }
         [BindProperty]
         public TalksResponse Talk { get; set; }
 
@@ -18,9 +19,10 @@ namespace FrontEnd.Pages.Talk
 
 
 
-        public EditModel(IApiClientService apiClientService)
+        public EditModel(IApiClientService apiClientService, IApiIdentityService apiIdentityService)
         {
             ApiClient = apiClientService;
+            IdentityClient = apiIdentityService;
         }
 
         public IActionResult OnGet(int? talk_id)
@@ -32,6 +34,9 @@ namespace FrontEnd.Pages.Talk
 
             if (Talk == null)
                 return NotFound();
+
+            if (IdentityClient.GetUserOwnershipAsync(new UserOwnership { UserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value, ConferenceId = ApiClient.GetConferenceFromTalkID(Talk.ID).Result }).Result == null)
+                return base.NotFound();
 
             personList = Talk.ParsePersonsString;
 

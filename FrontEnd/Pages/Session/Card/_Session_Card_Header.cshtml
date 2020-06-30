@@ -1,0 +1,31 @@
+﻿@using Models
+@using System.Globalization;
+@model SessionResponse
+@inject FrontEnd.Services.IApiIdentityService identityClient
+
+<div class="card-header input-group mb-0 d-flex flex-row r" id="heading-@Model.ID">
+
+    <button class="r flex-grow-1 btn btn-link collapsed text-left" data-toggle="collapse" data-target="#collapse-@Model.ID" aria-expanded="false" aria-controls="collapse-@Model.ID">
+        @Model.Start_Hour.ToString(@"dd.MM.yy", CultureInfo.InvariantCulture):
+        @Model.Start_Hour.ToString(@"HH\:mm", CultureInfo.InvariantCulture) - @Model.End_Hour.ToString(@"HH\:mm", CultureInfo.InvariantCulture) : @Model.Name
+    </button>
+
+    @if (User.Identity.IsAuthenticated)
+    {
+        {
+            string userid = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value;
+            var list = identityClient.GetUserOwnershipAsync(userid).Result;
+
+            if (list != null && list.Any(x => x.UserId.Equals(userid) && x.ConferenceId == Model.ConferenceID))
+            {
+                <div class="r input-group-append">
+                    <a asp-page="/Talk/Add" asp-route-session_id="@Model.ID" class="btn btn-outline-secondary oi oi-plus d-flex justify-content-center align-items-center"></a>
+                    <a asp-page="/Session/Edit" asp-route-session_id="@Model.ID" class="btn btn-outline-primary oi oi-pencil d-flex justify-content-center align-items-center"></a>
+                    <a asp-page="/Session/Delete" asp-route-session_id="@Model.ID" class="btn btn-outline-danger oi oi-trash d-flex justify-content-center align-items-center"></a>
+                </div>
+            }
+        }
+    }
+
+</div>
+

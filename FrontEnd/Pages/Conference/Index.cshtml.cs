@@ -13,23 +13,26 @@ namespace FrontEnd.Pages.Conference
     public class IndexModel : PageModel
     {
         private readonly ILogger<IndexModel> _logger;
-        protected readonly IApiClientService _apiClient;
+        protected readonly IApiClientService ApiClient;
+        private readonly IApiIdentityService IdentityClient;
 
+        [BindProperty]
         public ConferenceResponse conference { get; set; }
         public List<SessionResponse> Sessions { get; set; }
-        public IndexModel(ILogger<IndexModel> logger, IApiClientService apiClient)
+        public IndexModel(ILogger<IndexModel> logger, IApiClientService apiClient, IApiIdentityService apiIdentityService)
         {
             _logger = logger;
-            _apiClient = apiClient;
+            ApiClient = apiClient;
+            IdentityClient = apiIdentityService;
         }
         public async Task<IActionResult> OnGet(int conference_id)
         {
-            conference = await _apiClient.GetConferenceAsync(conference_id);
+            conference = await ApiClient.GetConferenceAsync(conference_id);
 
             if (conference == null)
                 return RedirectToPage("/Error");
 
-            var response = _apiClient.GetSessionsByConference(conference.ID).Result;
+            var response = ApiClient.GetSessionsByConference(conference.ID).Result;
             if (response is null || !response.Any())
                 Sessions = new List<SessionResponse>() { };
             else
@@ -37,5 +40,6 @@ namespace FrontEnd.Pages.Conference
 
             return Page();
         }
+
     }
 }

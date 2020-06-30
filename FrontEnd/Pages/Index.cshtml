@@ -21,10 +21,13 @@
 </div>
 
 <div class="Conferences">
-        <h1>Conference List</h1>
-    <div class="input-group">
-        <a asp-page="/Conference/Add" class="btn btn-secondary oi oi-plus d-flex justify-content-center align-items-center"></a>
-    </div>
+    <h1>Conference List</h1>
+    @if (User.Identity.IsAuthenticated)
+    {
+        <div class="input-group">
+            <a asp-page="/Conference/Add" class="btn btn-secondary oi oi-plus d-flex justify-content-center align-items-center"></a>
+        </div>
+    }
 
     @foreach (var conf in Model.Conferences)
     {

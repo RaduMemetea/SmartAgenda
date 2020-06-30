@@ -40,26 +40,24 @@ namespace FrontEnd.Models
             }
         }
 
-        public string GetHostsBeautyfied()// not fully functional
+        public string GetHostsBeautyfied()
         {
-            if (Hosts == null || !Hosts.Any()) return null;
+            if (Hosts == null || !Hosts.Any()) return "";
 
             string strBeautyfied = "";
             for (int i = 0; i < Hosts.Count(); i++)
             {
-                var host = Hosts.ElementAt(i).FullName;
+                strBeautyfied += Hosts.ElementAt(i).FullName;
 
                 if (Hosts.Count() > 1 && i == (Hosts.Count() - 2))
-                    strBeautyfied = $"{strBeautyfied} and {host}";
-
+                    strBeautyfied += " and ";
 
                 if (Hosts.Count() > 1 && i < (Hosts.Count() - 2))
-                    if (i == 0)
-                        strBeautyfied = $"{host}";
-                    else
-                        strBeautyfied = $"{strBeautyfied}, {host}";
+                    if (i != 0)
+                        strBeautyfied += ", ";
 
             }
+
             return strBeautyfied;
         }
 
@@ -87,6 +85,7 @@ namespace FrontEnd.Models
                 }
                 return hosts;
             }
+
             set
             {
                 if (value != null && value.Length > 0)

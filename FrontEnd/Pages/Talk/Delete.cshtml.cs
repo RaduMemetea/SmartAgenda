@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using FrontEnd.Data;
 using FrontEnd.Models;
 using FrontEnd.Services;
+using FrontEnd.Models.Identity;
 
 namespace FrontEnd.Pages.Talk
 {
@@ -18,10 +19,12 @@ namespace FrontEnd.Pages.Talk
         public TalksResponse Talk { get; set; }
 
         public IApiClientService ApiClient { get; }
+        public IApiIdentityService IdentityClient { get; }
 
-        public DeleteModel(IApiClientService apiClientService)
+        public DeleteModel(IApiClientService apiClientService, IApiIdentityService apiIdentityService)
         {
             ApiClient = apiClientService;
+            IdentityClient = apiIdentityService;
         }
 
         public async Task<IActionResult> OnGetAsync(int? talk_id)
@@ -37,6 +40,9 @@ namespace FrontEnd.Pages.Talk
             {
                 return NotFound();
             }
+            if (IdentityClient.GetUserOwnershipAsync(new UserOwnership { UserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value, ConferenceId = ApiClient.GetConferenceFromTalkID(Talk.ID).Result }).Result == null)
+                return base.NotFound();
+
 
             return Page();
         }

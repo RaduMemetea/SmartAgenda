@@ -1,0 +1,20 @@
+﻿@using Models
+@model TalksResponse
+@inject FrontEnd.Services.IApiIdentityService identityClient
+@inject FrontEnd.Services.IApiClientService apiClient
+
+@if (User.Identity.IsAuthenticated)
+{
+    {
+        string userid = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value;
+        var list = identityClient.GetUserOwnershipAsync(userid).Result;
+
+        if (list != null && list.Any(x => x.UserId.Equals(userid) && x.ConferenceId == apiClient.GetConferenceFromTalkID(Model.ID).Result))
+        {
+            <div class="ro-content d-flex my-auto ml-auto p-2">
+                <a asp-page="/Talk/Edit" asp-route-talk_id="@Model.ID" class="btn btn-outline-primary oi oi-pencil d-flex justify-content-center align-items-center"></a>
+                <a asp-page="/Talk/Delete" asp-route-talk_id="@Model.ID" class="btn btn-outline-danger oi oi-trash d-flex justify-content-center align-items-center"></a>
+            </div>
+        }
+    }
+}

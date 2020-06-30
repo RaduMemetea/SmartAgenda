@@ -1,30 +1,101 @@
 ﻿@page "{conference_id:int}"
 @model FrontEnd.Pages.Conference.IndexModel
-@using System.Globalization;
+
+@inject FrontEnd.Services.IApiIdentityService identityClient
+@inject FrontEnd.Services.IApiClientService apiClient
+
 @{
     ViewData["Title"] = "Index";
 }
 
-    <div class="Sessions">
+<h1>@Model.conference.Name</h1>
 
-        <h1>@Model.conference.Name</h1>
-        <div class="input-group">
 
-            <a asp-page="/Session/Add" asp-route-conference_id="@Model.conference.ID" class="btn btn-secondary oi oi-plus d-flex justify-content-center align-items-center"></a>
-            <a asp-page="/Conference/Edit" asp-route-conference_id="@Model.conference.ID" class="btn btn-primary oi oi-pencil d-flex justify-content-center align-items-center"></a>
-            <a asp-page="/Conference/Delete" asp-route-conference_id="@Model.conference.ID" class="btn btn-danger oi oi-trash d-flex justify-content-center align-items-center"></a>
-        </div>
+@if (User.Identity.IsAuthenticated)
+{
+    {
+        string userid = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value;
+        var list = identityClient.GetUserOwnershipAsync(userid).Result;
 
+        if (list != null && list.Any(x => x.UserId.Equals(userid) && x.ConferenceId == Model.conference.ID))
+        {
+            <div class="input-group">
+
+                <a asp-page="/Session/Add" asp-route-conference_id="@Model.conference.ID" class="btn btn-secondary oi oi-plus d-flex justify-content-center align-items-center"></a>
+                <a asp-page="/Conference/Edit" asp-route-conference_id="@Model.conference.ID" class="btn btn-primary oi oi-pencil d-flex justify-content-center align-items-center"></a>
+                <a asp-page="/Conference/Delete" asp-route-conference_id="@Model.conference.ID" class="btn btn-danger oi oi-trash d-flex justify-content-center align-items-center"></a>
+            </div>
+        }
+    }
+}
+
+
+
+
+@if (Model.Sessions != null && Model.Sessions.Any())
+{
+    @foreach (var session in Model.Sessions)
+    {
         <div id="accordion">
+            <div class="card">
 
-            @if(Model.Sessions != null && Model.Sessions.Any())
-            {
-                @foreach (var session in Model.Sessions)
-                {
-                    <partial name="Session/_Session_Card" model="session" />
-                }
-            }
+                <partial name="Session/Card/_Session_Card_Header" model="session" />
+
+                <div id="collapse-@session.ID" class="collapse" aria-labelledby="heading-@session.ID" data-parent="#accordion">
+                    <div class="card-body p-1">
+
+                        <partial name="Session/Card/_Session_Card_BodyDetails" model="session" />
+
+                        @if (session.Talks != null && session.Talks.Any())
+                        {
+                            <div class="Talks">
+
+                                <div class="card">
+                                    <div class="d-flex flex-column ro">
+                                        @foreach (var talk in session.Talks)
+                                        {
+                                            <div class="d-flex flex-row ro-content border-bottom">
+
+                                                @if (User.Identity.IsAuthenticated)
+                                                {
+                                                    <div class="ro-content my-auto">
+                                                        <button type="submit" id="@talk.ID" class="btn oi oi-plus" onclick="add(@talk.ID);" />
+                                                    </div>
+                                                }
+                        
+                                                <partial name="Talk/Card/_Talk_Card" model="talk" />
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+
+                            </div>
+                        }
+
+                    </div>
+                </div>
 
         </div>
-
     </div>
+    }
+}
+
+
+@section Scripts {
+    <script>
+        function add(talkId) {
+            $.ajax({
+                url: '/MyAgenda/Add',
+                data: {
+                    talkID: talkId
+                }
+            }).done(function (result) {
+                $('#' + talkId).prop('disabled', true);
+                $('#' + talkId).addClass('btn-success').removeClass('oi-plus').addClass('oi-check');
+            })
+        }
+    </script>
+
+    <script src="~/lib/jquery-ajax-unobtrusive/jquery.unobtrusive-ajax.min.js"></script>
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
