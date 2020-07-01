@@ -9,10 +9,10 @@
 
 @if (Model.Entry != null && Model.Entry.Any())
 {
-    <div class="conf">
 
-        @foreach (var item in Model.Entry)
-        {
+    @foreach (var item in Model.Entry)
+    {
+        <div class="conf">
             <h2><a asp-page="/Conference/Index" asp-route-conference_id="@item.Conference.ID">@item.Conference.Name:</a></h2>
 
             @foreach (var session in item.Sessions)
@@ -56,9 +56,9 @@
                 </div>
             }
 
-        }
-        <hr/>
-    </div>
+        </div>
+    }
+    <hr/>
 }
 
 
@@ -71,13 +71,19 @@
                     talkID: talkId
                 }
             }).done(function (result) {
-                if ($("#" + talkId).parent().text().length - $("#" + talkId).text().length - 300 < 0) {
-                    $('#' + talkId).closest(".conf").remove();
+                var talkParent = $("#" + talkId).parent();
+                var accord = talkParent.closest("#accordion");
+                var conf = accord.parent();
 
+                $('#' + talkId).remove();
+
+                if (accord.find(".ro").text().trim().length < 10) {
+                    accord.remove();
                 }
-                else {
-                    $('#' + talkId).remove();
+                if (conf.text().trim().length < 20) {
+                    conf.remove();
                 }
+              
             })
         }
     </script>
