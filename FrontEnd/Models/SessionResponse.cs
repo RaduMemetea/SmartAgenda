@@ -66,7 +66,7 @@ namespace FrontEnd.Models
         {
             get
             {
-                if (Hosts is null) return "";
+                if (Hosts is null || !Hosts.Any()) return "";
 
 
                 string hosts = "";

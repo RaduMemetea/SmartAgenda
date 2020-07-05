@@ -1,4 +1,5 @@
 ﻿using FrontEnd.Models;
+using FrontEnd.Models.Identity;
 using FrontEnd.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -33,6 +34,18 @@ namespace FrontEnd.Pages.MyAgenda
             var events = IdentityClient.GetUserAgendaAsync(id).Result;
 
             if (events == null || !events.Any()) return Page();
+
+            List<UserAgenda> list = new List<UserAgenda>();
+            foreach (var item in events)
+                if (ApiClient.GetConferenceAsync(item.ConferenceId).Result != null && ApiClient.GetSessionAsync(item.SessionId).Result != null && ApiClient.GetTalkAsync(item.TalkId).Result != null)
+                    list.Add(item);
+                else
+                    await IdentityClient.DeleteUserAgenda(item.UserId, item.ConferenceId, item.SessionId, item.TalkId);
+
+            if (list == null || !list.Any()) return Page();
+
+            events = list;
+            
 
             Entry = new List<AgendaEntry>();
 

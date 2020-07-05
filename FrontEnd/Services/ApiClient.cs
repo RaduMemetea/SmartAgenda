@@ -350,7 +350,7 @@ namespace FrontEnd.Services
             Talk converted = talkResponse.GetTalk;
 
             var response = CreateTalkAsync(converted).Result;
-            if (response == null)
+            if (response is null)
                 return new Tuple<bool, int>(false, 0);
 
             converted.ID = talkResponse.ID = response.ID;
@@ -359,18 +359,20 @@ namespace FrontEnd.Services
             if (talk_sessionResponse == null)
                 return new Tuple<bool, int>(false, -1);
 
-            List<Person> talk_Persons = talkResponse.Persons.ToList();
+            if (talkResponse.Persons != null && talkResponse.Persons.Any())
+            {
+                List<Person> talk_Persons = talkResponse.Persons.ToList();
 
-            if (talk_Persons != null && talk_Persons.Any())
-                foreach (var person in talk_Persons)
-                {
-                    var personResponse = CreateTalk_PersonsAsync(converted.ID, person).Result;
+                if (talk_Persons != null && talk_Persons.Any())
+                    foreach (var person in talk_Persons)
+                    {
+                        var personResponse = CreateTalk_PersonsAsync(converted.ID, person).Result;
 
-                    if (personResponse == null)
-                        return new Tuple<bool, int>(false, -2);
+                        if (personResponse == null)
+                            return new Tuple<bool, int>(false, -2);
 
-                }
-
+                    }
+            }
             return new Tuple<bool, int>(true, converted.ID);
 
         }
